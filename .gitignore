@@ -1,0 +1,6 @@
+Debug/
+Release/
+*.mdb
+*ldb
+*.config
+obj/
