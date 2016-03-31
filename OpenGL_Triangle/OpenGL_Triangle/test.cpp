@@ -119,7 +119,7 @@ int main()
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-
+	//test
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	//GLfloat vertices[] = {
 	//	-0.5f, -0.5f, 0.0f, // Bottom Left
