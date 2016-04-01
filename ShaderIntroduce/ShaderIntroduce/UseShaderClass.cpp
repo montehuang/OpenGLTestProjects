@@ -44,9 +44,9 @@ int main()
 
 
 	GLfloat triangle[] = {
-		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+		0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,   // Bottom Right
+		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,   // Bottom Left
+		0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // Top 
 	};
 
 	GLuint VBO, VAO;
@@ -63,6 +63,8 @@ int main()
 
 	glBindVertexArray(0);
 
+	GLfloat offsetX = glGetUniformLocation(shader->getProgram(), "offsetX");
+	
 	while (!glfwWindowShouldClose(window)){
 		glfwPollEvents();
 
@@ -71,7 +73,7 @@ int main()
 
 		/*GLfloat timeValue = glfwGetTime();
 		GLfloat greenValue = (sin(timeValue));*/
-
+		glUniform1f(offsetX, 0.5f);
 		shader->Use();
 		//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 		glBindVertexArray(VAO);

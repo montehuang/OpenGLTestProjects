@@ -15,6 +15,7 @@ public:
 
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 
+	GLfloat getProgram(){ return Program; }
 	void Use();
 private:
 	void compileShaders(const GLchar* vertexCode, const GLchar* fragmentCode);
