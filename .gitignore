@@ -4,4 +4,4 @@ Release/
 *ldb
 *.config
 obj/
-.suo
+*.suo
