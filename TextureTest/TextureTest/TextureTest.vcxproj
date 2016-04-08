@@ -81,6 +81,7 @@
   <ItemGroup>
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="TextureTest_1.cpp" />
+    <ClCompile Include="Transformation_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h" />
