@@ -1,18 +1,18 @@
 Some problems I met and some notices:
 Projection:
-1°¢Notice the order of transformation(like rotate and translate and etc)
-2°¢Two projection function:
-	<1>glm::perspective ---- perspective projection Õ∏ ”Õ∂”∞
-	<2>glm::ortho 		---- orthographic projection ’˝Õ∂”∞
-3°¢Define variables as uniform in shader files and then set them value in code
-4°¢Z-buffer: <1>enable depth testing by glEnable(GL_DEPTH_TEST)
+1„ÄÅNotice the order of transformation(like rotate and translate and etc)
+2„ÄÅTwo projection function:
+	<1>glm::perspective ---- perspective projection ÈÄèËßÜÊäïÂΩ±.
+	<2>glm::ortho 		---- orthographic projection Ê≠£ÊäïÂΩ±
+3„ÄÅDefine variables as uniform in shader files and then set them value in code
+4„ÄÅZ-buffer: <1>enable depth testing by glEnable(GL_DEPTH_TEST)
 		     <2>clear depth buffer by glClear(GL_DEPTH_BUFFER_BIT)
-5°¢glDrawArrays(mode,first,count) draw count vertices
-6°¢before draw call funciton glBindVertexArray(VAO), after draw call glBindVertexArray(0) to unbind
+5„ÄÅglDrawArrays(mode,first,count) draw count vertices
+6„ÄÅbefore draw call funciton glBindVertexArray(VAO), after draw call glBindVertexArray(0) to unbind
 
 Camera:
-1°¢Elements:position; direction(notice positive or negative);right axis; up axis
-2°¢LookAt matrix:get a LookAt matrix by glm::lookAt(cameraPos , target , upVector)
-3°¢glm::cross(left,right) return the vector is perpendicular to both input vectors
-4°¢To enable more keys can effect at once,we can use a array to store keys we pressed or released.
-5°¢Use deltaTime to balance the movement speed.
+1„ÄÅElements:position; direction(notice positive or negative);right axis; up axis
+2„ÄÅLookAt matrix:get a LookAt matrix by glm::lookAt(cameraPos , target , upVector)
+3„ÄÅglm::cross(left,right) return the vector is perpendicular to both input vectors
+4„ÄÅTo enable more keys can effect at once,we can use a array to store keys we pressed or released.
+5„ÄÅUse deltaTime to balance the movement speed.
