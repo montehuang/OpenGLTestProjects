@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraWithMouse.cpp" />
     <ClCompile Include="PerspectiveTest.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
