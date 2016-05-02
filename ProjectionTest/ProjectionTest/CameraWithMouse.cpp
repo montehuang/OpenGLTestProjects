@@ -11,7 +11,7 @@
 #include<glm/gtc/type_ptr.hpp>
 
 #include"Shader.h"
-
+#include"TheCamera.h"
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrameTime = 0.0f;
 //is mouse enter the window first
@@ -72,6 +72,8 @@ GLfloat opacity = 0.2f;
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double posX, double posY);
+void mouse_scroll(GLFWwindow* window, double xoffset, double yoffset);
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 void handleKeyToMove();
 // Window dimensions
@@ -101,7 +103,7 @@ int main()
 	// Set the required callback functions
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
-
+	glfwSetScrollCallback(window, mouse_scroll);
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
 	// Initialize GLEW to setup the OpenGL Function pointers
@@ -234,7 +236,7 @@ int main()
 		GLfloat ramX = sin(glfwGetTime()) * radius;
 		//GLfloat ramY = sin(glfwGetTime()) * radius;
 		//GLfloat ramZ = cos(glfwGetTime()) * radius;
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		view = camera.GetViewMatrix();
 
 		projection = glm::perspective(glm::radians(45.0f), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 		//get their uniform location
@@ -311,23 +313,7 @@ void mouse_callback(GLFWwindow* window, double posX, double posY)
 	lastX = posX;
 	lastY = posY;
 
-	GLfloat sensitivity = 0.05f;
-	offsetX *= sensitivity;
-	offsetY *= sensitivity;
-
-	pitch += offsetY;
-	yaw += offsetX;
-
-	if (pitch >= 89.0)
-		pitch = 89.0;
-	else if (pitch <= -89.0)
-		pitch = -89.0;
-
-	glm::vec3 front;
-	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-	front.y = sin(glm::radians(pitch));
-	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-	cameraFront = glm::normalize(front);
+	camera.ProcessMouseMovement(offsetX, offsetY);
 }
 void handleKeyToMove()
 {
@@ -349,4 +335,8 @@ void handleKeyToMove()
 	{
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	}
+}
+void mouse_scroll(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.ProcessMouseScroll(yoffset);
 }
