@@ -5,3 +5,4 @@ Release/
 *.config
 obj/
 *.suo
+*.sdf
