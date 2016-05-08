@@ -29,7 +29,7 @@ GLfloat lastX = WIDTH / 2.0;
 GLfloat lastY = HEIGHT / 2.0;
 bool keys[1024];
 
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(1.0f, 1.5f, 1.0f);
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
@@ -61,7 +61,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	//Build and compile shader program
-	Shader lightingShader("../res/ambient_diffuse.vs", "../res/ambient_diffuse.frag");
+	Shader lightingShader("../res/ambient_diffuse_specular.vs", "../res/ambient_diffuse_specular.frag");
 	Shader lampShader("../res/lamp.vs", "../res/lamp.frag");
 
 	GLfloat vertices[] = {
@@ -158,6 +158,10 @@ int main()
 		GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "lightPos");
 		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 
+		//viewPos uniform in fragment shader
+		GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
+		glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
+
 		//create camera transformations
 		glm::mat4 view;
 		view = camera.GetViewMatrix();
@@ -218,13 +222,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void do_movement()
 {
 	if (keys[GLFW_KEY_W])
-		camera.ProcessKeyBoard(FORWARD, deltaTime);
+		camera.ProcessKeyboard(FORWARD, deltaTime);
 	if (keys[GLFW_KEY_S])
-		camera.ProcessKeyBoard(BACKWARD, deltaTime);
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
 	if (keys[GLFW_KEY_A])
-		camera.ProcessKeyBoard(LEFT, deltaTime);
+		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (keys[GLFW_KEY_D])
-		camera.ProcessKeyBoard(RIGHT, deltaTime);
+		camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
 bool firstMouse = true;
