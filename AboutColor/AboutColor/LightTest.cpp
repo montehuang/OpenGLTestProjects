@@ -61,9 +61,10 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	//Build and compile shader program
-	Shader lightingShader("../res/ambient_diffuse_specular.vs", "../res/ambient_diffuse_specular.frag");
+	Shader lightingShader("../res/ambient_diffuse_specular_gouraud.vs", "../res/ambient_diffuse_specular_gouraud.frag");
 	Shader lampShader("../res/lamp.vs", "../res/lamp.frag");
 
+	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat vertices[] = {
 		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
 		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
@@ -108,7 +109,6 @@ int main()
 		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
 	};
 
-	//set the container's VAO and VBO
 	GLuint VBO, containerVAO;
 	glGenVertexArrays(1, &containerVAO);
 	glGenBuffers(1, &VBO);
@@ -117,90 +117,99 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glBindVertexArray(containerVAO);
-	//Position attribute
+	// Position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-
+	// Normal attribute
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 	glBindVertexArray(0);
 
+	// Then, we set the light's VAO (VBO stays the same. After all, the vertices are the same for the light object (also a 3D cube))
 	GLuint lightVAO;
 	glGenVertexArrays(1, &lightVAO);
 	glBindVertexArray(lightVAO);
-
+	// We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	// Set the vertex attributes (only position data for the lamp))
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0); // Note that we skip over the normal vectors
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 
+
+	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
-		//calculate deltatime of current frame
+		// Calculate deltatime of current frame
 		GLfloat currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
 		do_movement();
 
-		//clear the color buffer
+		// Clear the colorbuffer
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
+		lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
+		// Use cooresponding shader when setting uniforms/drawing objects
 		lightingShader.Use();
 		GLint objectColorLoc = glGetUniformLocation(lightingShader.Program, "objectColor");
 		GLint lightColorLoc = glGetUniformLocation(lightingShader.Program, "lightColor");
-		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-		glUniform3f(lightColorLoc, 1.0f, 0.0f, 1.0f);
-
-		//lightPos uniform in fragment shader
 		GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "lightPos");
-		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-
-		//viewPos uniform in fragment shader
 		GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
+		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+		glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 		glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
-		//create camera transformations
+
+
+		// Create camera transformations
 		glm::mat4 view;
 		view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-		//get the uniform locations
+		// Get the uniform locations
 		GLint modelLoc = glGetUniformLocation(lightingShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(lightingShader.Program, "view");
 		GLint projLoc = glGetUniformLocation(lightingShader.Program, "projection");
-		//pass the matrices to the shader
+		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-		//draw the container using container's vertex attributes
+		// Draw the container (using container's vertex attributes)
 		glBindVertexArray(containerVAO);
 		glm::mat4 model;
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 
-		//draw the lamp object
+		// Also draw the lamp object, again binding the appropriate shader
 		lampShader.Use();
+		// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
 		modelLoc = glGetUniformLocation(lampShader.Program, "model");
 		viewLoc = glGetUniformLocation(lampShader.Program, "view");
 		projLoc = glGetUniformLocation(lampShader.Program, "projection");
-		//set matrices
+		// Set matrices
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		model = glm::mat4();
 		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f));
+		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		//draw the light object using light's vertex attributes
+		// Draw the light object (using light's vertex attributes)
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 
-		//swap the screen buffers
+		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
+
+	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
 	return 0;
 }
