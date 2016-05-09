@@ -1,0 +1,6 @@
+Note that:
+1. All light pos transform/scale/rotate in same space(world-space or view-space)
+2. Watch out the viewer direction and light direction in specular lighting.
+3. Gouraud shading is change light color in Vertex shader and pass to fragment shader
+   but the color values of the surrounding fragments are then the result of interpolated
+   lighting color.
