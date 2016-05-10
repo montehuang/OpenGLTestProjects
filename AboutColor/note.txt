@@ -9,4 +9,4 @@ Note that:
 	including ambient/diffuse/specular lighting and a shininess(used in specular's
 	calculation,determin the size of hightlight spot.)
 5.	We can also define a light struct just as 4th point does.Pay attention to
-	the strength of the different lighting component.
+	the strength of the different lighting component.  
