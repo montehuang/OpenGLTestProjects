@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ColorMaterial.cpp" />
     <ClCompile Include="ColorTest_1.cpp" />
     <ClCompile Include="LightTest.cpp" />
     <ClCompile Include="Shader.cpp" />
