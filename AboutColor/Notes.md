@@ -13,4 +13,4 @@ to each objects.As a simple example,it can only contain 4 light components inclu
 >6.  Diffuse/Specular/Emission Map can simulate some relatively complex real objects which may contains some seperate parts those have different diffuse or specular attributes.
 
 ###Extra discoveries
->7.  One saccidental trial cheer me up that we can use specular map to get a effect like invisible potion.
+>1.  One saccidental trial cheer me up that we can use specular map to get a effect like invisible potion.
