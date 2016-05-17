@@ -61,7 +61,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	//Build and compile shader program
-	Shader lightingShader("../res/spotlight.vs", "../res/spotlight.frag");
+	Shader lightingShader("../res/spotlight_soft_edge.vs", "../res/spotlight_soft_edge.frag");
 	Shader lampShader("../res/lamp.vs", "../res/lamp.frag");
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
@@ -257,6 +257,9 @@ int main()
 		glUniform3f(lightDirectionLoc, camera.Front.x, camera.Front.y, camera.Front.z);
 		glUniform3f(lightPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
+		//spotlight (soft edges)
+		GLint lightOutCutOffLoc = glGetUniformLocation(lightingShader.Program, "light.outCutOff");
+		glUniform1f(lightOutCutOffLoc, glm::cos(glm::radians(17.5f)));
 
 		glUniform1f(lightConstantLoc, 1.0f);
 		glUniform1f(lightLinearLoc, 0.009);
@@ -264,7 +267,7 @@ int main()
 
 		/*lightPos.x = glm::cos(glfwGetTime()) * 2.5f + 1.0f;
 		lightPos.z = glm::sin(glfwGetTime()) * 3.7 + 2.0f;*/
-		glUniform1f(lightCutOffLoc, 0.98);
+		glUniform1f(lightCutOffLoc, glm::cos(glm::radians(14.5f)));
 
 		// Create camera transformations
 		glm::mat4 view;
