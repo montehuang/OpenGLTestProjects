@@ -61,7 +61,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	//Build and compile shader program
-	Shader lightingShader("../res/point_light.vs", "../res/point_light.frag");
+	Shader lightingShader("../res/spotlight.vs", "../res/spotlight.frag");
 	Shader lampShader("../res/lamp.vs", "../res/lamp.frag");
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
@@ -247,22 +247,24 @@ int main()
 		GLint lightConstantLoc = glGetUniformLocation(lightingShader.Program, "light.constant");
 		GLint lightLinearLoc = glGetUniformLocation(lightingShader.Program, "light.linear");
 		GLint lightQuadraticLoc = glGetUniformLocation(lightingShader.Program, "light.quadratic");
-
+		GLint lightCutOffLoc = glGetUniformLocation(lightingShader.Program, "light.cutOff");
 		GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
 		/*glUniform3f(lightAmbientLoc, ambientColor.x, ambientColor.y, ambientColor.z);
 		glUniform3f(lightDiffuseLoc, diffuseColor.x, diffuseColor.y, diffuseColor.z);*/
 		glUniform3f(lightAmbientLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
-		glUniform3f(lightDirectionLoc, -0.2f, -1.0f, -0.3f);
+		glUniform3f(lightDirectionLoc, camera.Front.x, camera.Front.y, camera.Front.z);
+		glUniform3f(lightPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
+
 
 		glUniform1f(lightConstantLoc, 1.0f);
 		glUniform1f(lightLinearLoc, 0.009);
 		glUniform1f(lightQuadraticLoc, 0.0032);
 
-		lightPos.x = glm::cos(glfwGetTime()) * 2.5f + 1.0f;
-		lightPos.z = glm::sin(glfwGetTime()) * 3.7 + 2.0f;
-		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+		/*lightPos.x = glm::cos(glfwGetTime()) * 2.5f + 1.0f;
+		lightPos.z = glm::sin(glfwGetTime()) * 3.7 + 2.0f;*/
+		glUniform1f(lightCutOffLoc, 0.98);
 
 		// Create camera transformations
 		glm::mat4 view;
